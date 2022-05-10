@@ -38,7 +38,7 @@ else {
 
 Write-Host "`n=======================================`n" -ForegroundColor Black
 Write-Host "Backing up Microsoft AppData" -BackgroundColor Green
-$null = New-Item "$backupLocation\Microsoft" -ItemType Directory
+$null = New-Item "$backupLocation\Microsoft" -ItemType Directory -ErrorAction SilentlyContinue
 "Signatures","Speech","Stationery","Sticky Notes","Templates" | ForEach-Object {
     if (Test-Path $env:APPDATA\Microsoft\$_){
         $null = New-Item $backupLocation\Microsoft\$_ -Force -ItemType Directory 
@@ -54,7 +54,7 @@ Write-Host "Backing up Optional data selected:" -BackgroundColor Green
 if ($log.Choices.BoolChrome -eq $true) {
     write-host "Backing up Chrome Bookmarks" -BackgroundColor Cyan
 
-    $null = New-Item "$backupLocation\Google Chrome" -ItemType Directory
+    $null = New-Item "$backupLocation\Google Chrome" -ItemType Directory -ErrorAction SilentlyContinue
     Write-Host "Backing up default chrome bookmarks. If user has multiple profiles, be sure to export those." -ForegroundColor Yellow
     Copy-Item "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Bookmarks" -Destination "$backupLocation\Google Chrome"
 
@@ -64,7 +64,7 @@ if ($log.Choices.BoolChrome -eq $true) {
 if ($log.Choices.BoolFirefox -eq $true){
     write-host "Backing up Firefox Bookmarks" -BackgroundColor Cyan
 
-    $null = New-Item "$backupLocation\FireFox" -ItemType Directory
+    $null = New-Item "$backupLocation\FireFox" -ItemType Directory -ErrorAction SilentlyContinue
     $FirefoxDefault = (get-item "$env:APPDATA\Mozilla\Firefox\Profiles\*.default").FullName
     Copy-Item "$FirefoxDefault\places.sqlite" -Destination "$backupLocation\Firefox"
     Copy-Item "$FirefoxDefault\Bookmarkbackups\" -Destination "$backupLocation\Firefox" -Recurse
@@ -74,7 +74,7 @@ if ($log.Choices.BoolFirefox -eq $true){
 if ($log.Choices.BoolEdge -eq $true){
     write-host "Backing up Edge Bookmarks" -BackgroundColor Cyan
 
-    $null = New-Item "$backupLocation\Edge" -ItemType Directory
+    $null = New-Item "$backupLocation\Edge" -ItemType Directory -ErrorAction SilentlyContinue
     $EdgeDefault = "$env:LOCALAPPDATA\microsoft\edge\user data\default"
     Copy-Item "$EdgeDefault\Bookmarks" -Destination "$backupLocation\Edge"
 
@@ -84,7 +84,7 @@ if ($log.Choices.BoolEdge -eq $true){
 if ($log.Choices.BoolWifi -eq $true){
     Write-Host "Backing up Wifi Profiles" -BackgroundColor Cyan
 
-    $null = New-Item "$backupLocation\Wifi Profiles" -ItemType Directory
+    $null = New-Item "$backupLocation\Wifi Profiles" -ItemType Directory -ErrorAction SilentlyContinue
     $null = netsh wlan export profile key=clear folder="$backupLocation\Wifi Profiles"
     $wifiProfileNames = (netsh wlan show profiles) | Select-String "\:(.+)$"
     $null = New-Item -Path "$backupLocation\Wifi Profiles\ManualRestore.txt" -ItemType File
@@ -99,7 +99,7 @@ if ($log.Choices.BoolChrome -eq $true) {
     $ChromePass = Read-host "Would you like to back-up Chrome passwords? y/n"
     if ($ChromePass -eq "y") {
         Write-host "Please wait for chrome to finish loading. chrome://settings/passwords"
-        Start-process "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" -ArgumentList  'google.com --profile-directory="Default"' -PassThru
+        Start-process "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" -ArgumentList  'google.com --profile-directory="Default"'
         Start-Sleep -Seconds 1.5
         [System.Windows.Forms.SendKeys]::SendWait("^l")
         Start-Sleep -Milliseconds 200
@@ -114,7 +114,7 @@ if ($log.Choices.BoolEdge -eq $true) {
     $EdgePass = Read-host "Would you like to back-up Edge passwords? y/n"
     if ($EdgePass -eq "y") {
         Write-host "Please wait for Edge to finish loading: edge://settings/passwords"
-        Start-process "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" -ArgumentList  "bing.com" -PassThru
+        Start-process "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" -ArgumentList  "bing.com"
         Start-Sleep -Seconds 1.5
         [System.Windows.Forms.SendKeys]::SendWait("^l")
         Start-Sleep -Milliseconds 200
@@ -129,8 +129,8 @@ if ($log.Choices.BoolEdge -eq $true) {
 
 if ($log.Choices.BoolPrinters -eq $true){
     #printbrm.exe does not handle spaces in file paths correctly. creating backup in profile, then copying to backup folder.
-    $null = New-Item "$backupLocation\PrinterExport" -ItemType Directory -Force
-    $null = New-Item "$env:USERPROFILE\Printerexport" -ItemType Directory -Force
+    $null = New-Item "$backupLocation\PrinterExport" -ItemType Directory -Force -ErrorAction SilentlyContinue
+    $null = New-Item "$env:USERPROFILE\Printerexport" -ItemType Directory -Force -ErrorAction SilentlyContinue
     $printerBackupName = "printers_$(get-date -Format "yyyy.MM.dd-HH.mm.ss").printerExport"
 
     Write-Host "Working on backing up printers." -BackgroundColor Cyan

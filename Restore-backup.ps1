@@ -1,6 +1,6 @@
 [void][System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")
 Add-Type -AssemblyName System.Windows.Forms
-cls
+Clear-Host
 Write-host "This Script will overwrite current files with those in the backup folder.`nOverwritten files will not be saved or recoverable. Would you like to continue?" -ForegroundColor DarkYellow
 do {$exit = read-host "y/n"} while (($exit -ne "y") -and ($exit -ne  "n"))
 if ($exit -eq "n"){exit}

@@ -12,7 +12,7 @@ $outputDate = (get-date -Format "yyyy.MM.dd")
 if (Test-Path $env:OneDriveCommercial) {
     $backupLocation = ($env:OneDriveCommercial) + "\Laptop Backup " + ($outputDate)
     $log.backupLocation = $backupLocation
-    Write-Host "Saving to " $backupLocation -BackgroundColor Green
+    Write-Host "Saving to " $backupLocation -BackgroundColor DarkGreen
     $null = $log.Warnings.Add("Saving to OneDrive, please ensure user's OneDrive is syncing.")
     
 }
@@ -22,7 +22,7 @@ else {
     New-item -Path $backupLocation -Force   
 
     $null = $log.Warnings.add("Note unable to save to OneDrive Location. Saving to c:\Laptop Backups")
-    Write-host "Note unable to save to OneDrive Location. Saving to c:\Laptop Backups" -BackgroundColor Yellow
+    Write-host "Note unable to save to OneDrive Location. Saving to c:\Laptop Backups" -BackgroundColor DarkYellow
 
     $log.backupLocation = $backupLocation
 }
@@ -37,22 +37,22 @@ else {
 }
 
 Write-Host "`n=======================================`n" -ForegroundColor Black
-Write-Host "Backing up Microsoft AppData" -BackgroundColor Green
+Write-Host "Backing up Microsoft AppData" -BackgroundColor DarkGreen
 $null = New-Item "$backupLocation\Microsoft" -ItemType Directory -ErrorAction SilentlyContinue
 "Signatures","Speech","Stationery","Sticky Notes","Templates" | ForEach-Object {
     if (Test-Path $env:APPDATA\Microsoft\$_){
         $null = New-Item $backupLocation\Microsoft\$_ -Force -ItemType Directory 
-        Write-Host "Backing up $_" -BackgroundColor Cyan
+        Write-Host "Backing up $_" -BackgroundColor DarkCyan
         Copy-Item $env:APPDATA\Microsoft\$_\* -Destination $backupLocation\Microsoft\$_ -Force
     }
 }
 
 #Optional Choices
 Write-Host "`n=======================================`n" -ForegroundColor Black
-Write-Host "Backing up Optional data selected:" -BackgroundColor Green
+Write-Host "Backing up Optional data selected:" -BackgroundColor DarkGreen
 
 if ($log.Choices.BoolChrome -eq $true) {
-    write-host "Backing up Chrome Bookmarks" -BackgroundColor Cyan
+    write-host "Backing up Chrome Bookmarks" -BackgroundColor DarkCyan
 
     $null = New-Item "$backupLocation\Google Chrome" -ItemType Directory -ErrorAction SilentlyContinue
     Write-Host "Backing up default chrome bookmarks. If user has multiple profiles, be sure to export those." -ForegroundColor Yellow
@@ -62,7 +62,7 @@ if ($log.Choices.BoolChrome -eq $true) {
 }
 
 if ($log.Choices.BoolFirefox -eq $true){
-    write-host "Backing up Firefox Bookmarks" -BackgroundColor Cyan
+    write-host "Backing up Firefox Bookmarks" -BackgroundColor DarkCyan
 
     $null = New-Item "$backupLocation\FireFox" -ItemType Directory -ErrorAction SilentlyContinue
     $FirefoxDefault = (get-item "$env:APPDATA\Mozilla\Firefox\Profiles\*.default").FullName
@@ -72,7 +72,7 @@ if ($log.Choices.BoolFirefox -eq $true){
 }
 
 if ($log.Choices.BoolEdge -eq $true){
-    write-host "Backing up Edge Bookmarks" -BackgroundColor Cyan
+    write-host "Backing up Edge Bookmarks" -BackgroundColor DarkCyan
 
     $null = New-Item "$backupLocation\Edge" -ItemType Directory -ErrorAction SilentlyContinue
     $EdgeDefault = "$env:LOCALAPPDATA\microsoft\edge\user data\default"
@@ -82,7 +82,7 @@ if ($log.Choices.BoolEdge -eq $true){
 }
 
 if ($log.Choices.BoolWifi -eq $true){
-    Write-Host "Backing up Wifi Profiles" -BackgroundColor Cyan
+    Write-Host "Backing up Wifi Profiles" -BackgroundColor DarkCyan
 
     $null = New-Item "$backupLocation\Wifi Profiles" -ItemType Directory -ErrorAction SilentlyContinue
     $null = netsh wlan export profile key=clear folder="$backupLocation\Wifi Profiles"
@@ -133,7 +133,7 @@ if ($log.Choices.BoolPrinters -eq $true){
     $null = New-Item "$env:USERPROFILE\Printerexport" -ItemType Directory -Force -ErrorAction SilentlyContinue
     $printerBackupName = "printers_$(get-date -Format "yyyy.MM.dd-HH.mm.ss").printerExport"
 
-    Write-Host "Working on backing up printers." -BackgroundColor Cyan
+    Write-Host "Working on backing up printers." -BackgroundColor DarkCyan
     write-host "This can take a some time depending on how many printers and drivers are installed." -ForegroundColor Yellow
     Write-host "If you would like to delete old or unused printers. Please do so now via PrintManagement.msc before hitting enter." -ForegroundColor Yellow
     Pause

@@ -28,7 +28,7 @@ else {
 }
 
 "Chrome","Firefox","Edge","Wifi","Printers"| ForEach-Object {
-    $choice = New-Variable -Name "Bool$_" -Value (Read-Host "Would you like to back up $_ ?") -Force -PassThru
+    $choice = New-Variable -Name "Bool$_" -Value (Read-Host "Would you like to back up $_ ? y / n") -Force -PassThru
     if ($choice.Value -eq "y"){$choice.Value = $true}
     else {$choice.Value = $false}
     $null = $log.Choices.add([PSCustomObject]@{

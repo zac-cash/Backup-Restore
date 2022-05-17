@@ -9,8 +9,7 @@ $log = [PSCustomObject]@{
 }
 $outputDate = (get-date -Format "yyyy.MM.dd")
 
-#if (Test-Path $env:OneDriveCommercial) {
-if ($false) {    
+if (Test-Path $env:OneDriveCommercial) {    
     $backupLocation = ($env:OneDriveCommercial) + "\Laptop Backup " + ($outputDate)
     $log.backupLocation = $backupLocation
     Write-Host "Saving to " $backupLocation -BackgroundColor DarkGreen

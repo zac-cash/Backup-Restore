@@ -17,12 +17,9 @@ if (Test-Path $env:OneDriveCommercial) {
     
 }
 else {
-    New-Item -Path "c:\Laptop Backups" -Force
-    $backupLocation = "c:\Laptop Backups\Laptop Backup " + ($outputDate)
-    New-item -Path $backupLocation -Force   
-
-    $null = $log.Warnings.add("Note unable to save to OneDrive Location. Saving to c:\Laptop Backups")
-    Write-host "Note unable to save to OneDrive Location. Saving to c:\Laptop Backups" -BackgroundColor DarkYellow
+    $backupLocation = New-Item -Path ("$env:USERPROFILE\Laptop Backup " + ($outputDate)) -Force
+    $null = $log.Warnings.add("Note unable to save to OneDrive Location. Saving to $($backuplocation.FullName)")
+    Write-host "Note unable to save to OneDrive Location. Saving to $($backuplocation.FullName)" -BackgroundColor DarkYellow
 
     $log.backupLocation = $backupLocation
 }

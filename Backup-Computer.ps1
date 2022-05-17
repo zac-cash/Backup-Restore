@@ -9,7 +9,8 @@ $log = [PSCustomObject]@{
 }
 $outputDate = (get-date -Format "yyyy.MM.dd")
 
-if (Test-Path $env:OneDriveCommercial) {
+#if (Test-Path $env:OneDriveCommercial) {
+if ($false) {    
     $backupLocation = ($env:OneDriveCommercial) + "\Laptop Backup " + ($outputDate)
     $log.backupLocation = $backupLocation
     Write-Host "Saving to " $backupLocation -BackgroundColor DarkGreen
@@ -17,9 +18,9 @@ if (Test-Path $env:OneDriveCommercial) {
     
 }
 else {
-    $backupLocation = New-Item -Path ("$env:USERPROFILE\Laptop Backup " + ($outputDate)) -Force
-    $null = $log.Warnings.add("Note unable to save to OneDrive Location. Saving to $($backuplocation.FullName)")
-    Write-host "Note unable to save to OneDrive Location. Saving to $($backuplocation.FullName)" -BackgroundColor DarkYellow
+    $backupLocation = (New-Item -Path ("$env:USERPROFILE\Laptop Backup " + ($outputDate)) -ItemType Directory -Force).fullName
+    $null = $log.Warnings.add("Note unable to save to OneDrive Location. Saving to $backuplocation")
+    Write-host "Note unable to save to OneDrive Location. Saving to $backuplocation" -BackgroundColor DarkYellow
 
     $log.backupLocation = $backupLocation
 }

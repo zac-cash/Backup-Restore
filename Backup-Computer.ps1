@@ -48,12 +48,14 @@ $null = New-Item "$backupLocation\Microsoft" -ItemType Directory -ErrorAction Si
 Write-Host "`n=======================================`n" -ForegroundColor Black
 Write-Host "Backing up Optional data selected:" -BackgroundColor DarkGreen
 
+#TODO: add bookmarks.bak
 if ($log.Choices.BoolChrome -eq $true) {
     write-host "Backing up Chrome Bookmarks" -BackgroundColor DarkCyan
 
     $null = New-Item "$backupLocation\Google Chrome" -ItemType Directory -ErrorAction SilentlyContinue
     Write-Host "Backing up default chrome bookmarks. If user has multiple profiles, be sure to export those." -ForegroundColor Yellow
     Copy-Item "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Bookmarks" -Destination "$backupLocation\Google Chrome"
+    Copy-Item "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Bookmarks.bak" -Destination "$backupLocation\Google Chrome"
 
     $null = $log.Warnings.Add("Be sure to backup Google saved passwords if not synced to a google profile.")
 }

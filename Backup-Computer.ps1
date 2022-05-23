@@ -9,7 +9,14 @@ $log = [PSCustomObject]@{
 }
 $outputDate = (get-date -Format "yyyy.MM.dd")
 
-if (Test-Path $env:OneDriveCommercial) {    
+
+if ($null -eq $env:OneDriveCommercial){
+    $backupLocation = (New-Item -Path ("$env:USERPROFILE\Laptop Backup " + ($outputDate)) -ItemType Directory -Force).fullName
+    Write-Host "OneDrive for Business not detected. Saving to " $backupLocation -BackgroundColor DarkRed
+    $null = $log.Warnings.add("Note unable to save to OneDrive Location. Saving to $backuplocation")
+    $log.backupLocation = $backupLocation
+}
+elseif (Test-Path $env:OneDriveCommercial) {    
     $backupLocation = ($env:OneDriveCommercial) + "\Laptop Backup " + ($outputDate)
     $log.backupLocation = $backupLocation
     Write-Host "Saving to " $backupLocation -BackgroundColor DarkGreen
@@ -17,12 +24,21 @@ if (Test-Path $env:OneDriveCommercial) {
     
 }
 else {
-    $backupLocation = (New-Item -Path ("$env:USERPROFILE\Laptop Backup " + ($outputDate)) -ItemType Directory -Force).fullName
-    $null = $log.Warnings.add("Note unable to save to OneDrive Location. Saving to $backuplocation")
-    Write-host "Note unable to save to OneDrive Location. Saving to $backuplocation" -BackgroundColor DarkYellow
+    Write-host "OneDrive Detected, but unable to save to OneDrive Location.`nPlease select where you would like this backup placed." -BackgroundColor DarkYellow
+    pause
 
+    [void][System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")
+    Add-Type -AssemblyName System.Windows.Forms
+
+    $FolderBrowser = New-Object System.Windows.Forms.FolderBrowserDialog -Property @{ RootFolder = "userprofile" }
+    $null = $FolderBrowser.ShowDialog()
+
+    $backupLocation = $FolderBrowser.SelectedPath
+    $null = $log.Warnings.add("OneDrive Detected, but unable to save to OneDrive Location. Saving to $backuplocation")
     $log.backupLocation = $backupLocation
 }
+
+
 
 "Chrome","Firefox","Edge","Wifi","Printers"| ForEach-Object {
     $choice = New-Variable -Name "Bool$_" -Value (Read-Host "Would you like to back up $_ ? y / n") -Force -PassThru

@@ -80,7 +80,7 @@ if ($backupjson.Choices.BoolPrinters -eq $true) {
         Copy-Item -Path "$backuplocation\PrinterExport\$Printerfile" -Destination "$env:USERPROFILE\printerRestore\"
 
         $path = "$env:USERPROFILE\printerRestore\$Printerfile"
-        Start-Process cmd -ArgumentList "/k C:\Windows\System32\spool\tools\PrintBrm.exe -r -f $path" -Credential (Get-Credential)
+        Start-Process cmd -ArgumentList "/k C:\Windows\System32\spool\tools\PrintBrm.exe -r -f $path" -Credential (Get-Credential -UserName "$Env:ComputerName\LocalAdmin" -Message "Please enter LAPS creds. Adjust Username to domain appropriate username.")
     }
 }
 

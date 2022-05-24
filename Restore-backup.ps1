@@ -9,7 +9,12 @@ Write-Host "Please select the backup.json in onedrive, created by the backup scr
 Pause
 
 $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ InitialDirectory = [Environment]::GetFolderPath('UserProfile') }
-$null = $FileBrowser.ShowDialog()
+$FileBrowser.ShowDialog()
+
+if ($FileBrowser.FileName -eq ""){
+    write-host "Script canceled."
+    Exit
+}
 
 $backupjson = Get-Content -Path ($FileBrowser.FileName) | ConvertFrom-Json
 if (Test-Path $backupjson.backupLocation){
@@ -64,11 +69,11 @@ if ($backupjson.Choices.BoolEdge -eq $true){
 
 if ($backupjson.Choices.BoolWifi -eq $true) {
     Write-Host "Restoring Wifi" -ForegroundColor Cyan
-    $wifiDecision = write-host "Would you like to delete the wifi profiles after importing? They contain clear text passwords." -ForegroundColor Yellow
+    $wifiDecision = Read-host "Would you like to delete the wifi profiles after importing? They contain clear text passwords. y/n" -ForegroundColor Yellow
     Get-ChildItem -Path "$backupLocation\Wifi Profiles" -Exclude "*.txt" | ForEach-Object {netsh wlan add profile filename="$_"}
 
     if ($wifiDecision -eq "y") {
-        Get-ChildItem -Path "$backupLocation\Wifi Profiles" -Exclude "*.txt" | Remove-Item -Force
+        Get-ChildItem -Path "$backupLocation\Wifi Profiles" -Exclude "*.txt" | Remove-Item -Force -Confirm:$false
     }
 }
 

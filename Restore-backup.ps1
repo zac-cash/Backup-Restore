@@ -69,7 +69,8 @@ if ($backupjson.Choices.BoolEdge -eq $true){
 
 if ($backupjson.Choices.BoolWifi -eq $true) {
     Write-Host "Restoring Wifi" -ForegroundColor Cyan
-    $wifiDecision = Read-host "Would you like to delete the wifi profiles after importing? They contain clear text passwords. y/n" -ForegroundColor Yellow
+    write-host "Would you like to delete the wifi profiles after importing? They contain clear text passwords. y/n" -ForegroundColor Yellow
+    $wifiDecision = Read-host
     Get-ChildItem -Path "$backupLocation\Wifi Profiles" -Exclude "*.txt" | ForEach-Object {netsh wlan add profile filename="$_"}
 
     if ($wifiDecision -eq "y") {

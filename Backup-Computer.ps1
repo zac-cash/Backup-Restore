@@ -56,7 +56,7 @@ $null = New-Item "$backupLocation\Microsoft" -ItemType Directory -ErrorAction Si
     if (Test-Path $env:APPDATA\Microsoft\$_){
         $null = New-Item $backupLocation\Microsoft\$_ -Force -ItemType Directory 
         Write-Host "Backing up $_" -BackgroundColor DarkCyan
-        Copy-Item $env:APPDATA\Microsoft\$_ -Destination $backupLocation\Microsoft\$_ -Force -Recurse
+        Copy-Item $env:APPDATA\Microsoft\$_ -Destination $backupLocation\Microsoft\ -Force -Recurse
     }
 }
 

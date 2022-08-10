@@ -1,0 +1,64 @@
+#This website is a powershell launchpad for Zac Cash's powershell script repository.
+#Github: https://github.com/zac-cash
+#Tools hosted on this site are free to use with no warranty / support. 
+#To contact the author, please message on github or linkedin: www.zac.cash
+#Spam will be blocked.
+
+# Scripts to be called
+# Backup
+$backup = 'Invoke-Restmethod https://raw.githubusercontent.com/zac-cash/Backup-Restore/main/Backup-Computer.ps1 | invoke-expression'
+$restore = 'Invoke-Restmethod https://raw.githubusercontent.com/zac-cash/Backup-Restore/main/Restore-backup.ps1 | invoke-expression'
+$network = 'Invoke-restmethod https://raw.githubusercontent.com/zac-cash/Reset-Win10Network/main/Reset-NetworkConfig.ps1 | invoke-expression'
+$github = 'https://github.com/zac-cash/'
+
+
+Clear-Host
+$choicedesc = New-Object System.Collections.ObjectModel.Collection[System.Management.Automation.Host.ChoiceDescription]
+$Options = @(
+    ("&Backup", "Grabs backup script from https://raw.githubusercontent.com/zac-cash/Backup-Restore/, and invokes it."),
+    ('&Restore Backup', 'Grabs Restore script from https://raw.githubusercontent.com/zac-cash/Backup-Restore/, and invokes it.'),
+    ('&Networking Tools', 'Opens Networking Script.'),
+    ('&Computer Information', 'Get computer information'),
+    ('&Administrator Context', 'Opens this script in Administrator Context'),
+    ('&GitHub', 'Goes to Github'),
+    ('&Quit', 'Quit Script')
+)
+foreach ($option in $Options) {
+    $choicedesc.Add((New-Object System.Management.Automation.Host.ChoiceDescription $option ))
+}
+$menu = @"
+Current user context: $env:USERNAME
+Computer Name: $env:COMPUTERNAME
+
+Please select from the following list:
+B. Backup Computer
+R. Restore Backup
+N. Networking tools
+C. Computer Information
+A. Open this script in Administrator Context
+G. Go to GitHub
+Q. Quit
+"@
+
+#Main logic
+
+While ($true){   
+    Write-host $menu
+    $result = $host.ui.PromptForChoice('Menu:', '', $choicedesc, -1)
+    Clear-Host
+    switch ($result) {
+        #backup
+        0 { Start-Process PowerShell -ArgumentList "-noexit", "$backup" }
+        #restore
+        1 { Start-Process PowerShell -ArgumentList "-noexit", "$restore" }
+        #networking script
+        2 { Start-Process PowerShell -ArgumentList "-noexit", "$network" }
+        #computer information
+        3 { write-host "Not live yet" -ForegroundColor Red; start-sleep -Seconds 1; break }
+        #Open in Administrator Context
+        4 { write-host "Not live yet" -ForegroundColor Red; start-sleep -Seconds 1; break }
+        #github
+        5 { Start-Process "$github" }
+        6 { exit }
+    }
+}
